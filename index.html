@@ -16,19 +16,28 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #18181b; }
-        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #09090b; }
+        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 5px; }
         ::-webkit-scrollbar-thumb:hover { background: #52525b; }
         
         /* Efeito de pulso para missões desbloqueadas */
         @keyframes pulse-ring {
             0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+            70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(220, 38, 38, 0); }
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
         }
         .mission-active {
             animation: pulse-ring 2s infinite;
+        }
+
+        /* Fundo imersivo estilo "Ada Wong / Hacker" */
+        body {
+            background-color: #09090b;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(127, 29, 29, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(127, 29, 29, 0.08) 0%, transparent 50%);
+            background-attachment: fixed;
         }
     </style>
 
@@ -45,12 +54,12 @@
         window.dispatchEvent(new Event('firebaseLoaded'));
     </script>
 </head>
-<body class="bg-zinc-950 text-zinc-100 font-sans antialiased">
+<body class="text-zinc-100 font-sans antialiased selection:bg-red-900 selection:text-white">
     
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState, useEffect, Fragment } = React;
 
         // Ícones SVG
         const Flame = ({ size, className }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>;
@@ -64,7 +73,6 @@
         const Cloud = ({ size, className }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>;
         const Brain = ({ size, className }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M17.599 6.5a3 3 0 0 0 .399-1.375"/></svg>;
         const Lock = ({ size, className }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>;
-        const Unlock = ({ size, className }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>;
         const Star = ({ size, className, fill }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>;
 
         const ALL_QUESTIONS = [
@@ -82,7 +90,7 @@
             { id: 12, topic: "Regra Empírica (Curva Normal)", question: "Pela regra empírica da Normal, aproximadamente qual a percentagem dos dados que fica a 2 desvios-padrão (±2σ) de distância da média?", options: ["68%", "95%", "99.7%", "50%"], correct: 1, rationale: "Regra empírica: ±1σ = ~68%, ±2σ = ~95%, ±3σ = ~99.7%. O diapositivo do professor cobra isso (95.44% exato, ou 95% prático).", hint: "Lembre-se do gráfico em sino. ±1 desvio é a maioria simples, ±2 desvios abrange a grande maioria." }
         ];
 
-        // Definição das Missões (Estilo Duolingo)
+        // Definição das Missões
         const MISSIONS_DATA = [
             { id: 1, title: "Fundamentos Rápidos", subtitle: "PMF, Esperança e Variância", qIds: [1, 2, 3] },
             { id: 2, title: "Distribuições Base", subtitle: "Binomial, Poisson e Normal", qIds: [4, 5, 6] },
@@ -95,9 +103,9 @@
         const LilyAvatar = ({ mood }) => {
             const getStyle = () => {
                 switch(mood) {
-                    case 'happy': return 'bg-green-600 border-green-400 shadow-[0_0_15px_rgba(74,222,128,0.5)]';
-                    case 'angry': return 'bg-red-700 border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.7)]';
-                    case 'thinking': return 'bg-red-900 border-red-700';
+                    case 'happy': return 'bg-green-600 border-green-500 shadow-[0_0_20px_rgba(74,222,128,0.4)]';
+                    case 'angry': return 'bg-red-700 border-red-500 shadow-[0_0_25px_rgba(239,68,68,0.6)]';
+                    case 'thinking': return 'bg-red-950 border-red-800 shadow-[0_0_15px_rgba(153,27,27,0.3)]';
                     default: return 'bg-zinc-800 border-zinc-700';
                 }
             };
@@ -112,11 +120,11 @@
             };
 
             return (
-                <div className="flex flex-col items-center z-10">
-                    <div className={`w-20 h-20 rounded-full border-4 flex items-center justify-center text-white text-2xl font-black transition-all duration-300 ${getStyle()}`}>
+                <div className="flex flex-col items-center z-10 shrink-0">
+                    <div className={`w-24 h-24 md:w-32 md:h-32 rounded-full border-[5px] flex items-center justify-center text-white text-3xl md:text-5xl font-black transition-all duration-300 ${getStyle()}`}>
                         {getFace()}
                     </div>
-                    <span className="text-xs font-bold mt-2 text-zinc-400 uppercase tracking-widest bg-zinc-950 px-2 rounded-full">Lily</span>
+                    <span className="text-sm font-black mt-3 text-red-400 uppercase tracking-[0.3em] bg-zinc-950/80 px-4 py-1 rounded-full border border-red-900/50">Lily</span>
                 </div>
             );
         };
@@ -129,11 +137,11 @@
 
             // Interface
             const [step, setStep] = useState('intro'); // intro, quiz, results
-            const [activeMission, setActiveMission] = useState(null); // ID da missão atual
+            const [activeMission, setActiveMission] = useState(null); 
             
             const [currentIndex, setCurrentIndex] = useState(0);
             const [score, setScore] = useState(0);
-            const [hearts, setHearts] = useState(3); // Reduzido para 3 corações (aprender rápido)
+            const [hearts, setHearts] = useState(3);
             const [wrongAnswers, setWrongAnswers] = useState([]);
             const [selectedOption, setSelectedOption] = useState(null);
             const [isAnswered, setIsAnswered] = useState(false);
@@ -177,7 +185,6 @@
                 const unsubscribe = window.FirebaseAPI.onSnapshot(docRef, (docSnap) => {
                     if (docSnap.exists()) {
                         const data = docSnap.data();
-                        // Garantir que a propriedade highestUnlocked exista nas contas antigas
                         setSavedStats({ ...data, highestUnlocked: data.highestUnlocked || 1 });
                     } else {
                         window.FirebaseAPI.setDoc(docRef, { gamesPlayed: 0, bestScore: 0, allTimeWrong: [], highestUnlocked: 1 });
@@ -197,10 +204,9 @@
                     const historicalWrongs = savedStats.allTimeWrong || [];
                     const updatedWrongs = [...new Set([...historicalWrongs, ...sessionWrongIds])];
                     
-                    // Se o usuário sobreviveu (hearts > 0), ele passa a missão
                     let newUnlocked = savedStats.highestUnlocked || 1;
                     if (hearts > 0 && activeMission && activeMission.id === newUnlocked) {
-                        newUnlocked = Math.min(4, newUnlocked + 1); // 4 é o total de missões
+                        newUnlocked = Math.min(4, newUnlocked + 1); 
                     }
 
                     window.FirebaseAPI.setDoc(docRef, {
@@ -222,7 +228,7 @@
                 setWrongAnswers([]);
                 setCurrentIndex(0);
                 setScore(0);
-                setHearts(3); // 3 Corações para ser rápido e letal
+                setHearts(3); 
                 setIsAnswered(false);
                 setSelectedOption(null);
                 setStep('quiz');
@@ -245,7 +251,7 @@
                 setWrongAnswers([]);
                 setCurrentIndex(0);
                 setScore(0);
-                setHearts(5); // 5 corações para a Mega Revisão
+                setHearts(5); 
                 setIsAnswered(false);
                 setSelectedOption(null);
                 setStep('quiz');
@@ -293,83 +299,108 @@
                 const unlockedLevel = savedStats.highestUnlocked || 1;
                 
                 return (
-                    <div className="min-h-screen flex flex-col items-center py-10 px-4 relative overflow-hidden">
-                        {/* Background Deco */}
-                        <div className="fixed -top-40 -left-40 w-96 h-96 bg-red-900/10 rounded-full blur-3xl pointer-events-none"></div>
-                        <div className="fixed -bottom-40 -right-40 w-96 h-96 bg-red-900/10 rounded-full blur-3xl pointer-events-none"></div>
-
-                        <div className="w-full max-w-md z-10 flex flex-col items-center">
-                            <LilyAvatar mood="thinking" />
+                    <div className="min-h-screen flex items-center justify-center p-4 md:p-8 lg:p-12 relative overflow-hidden">
+                        {/* Wrapper principal ajustado para telas largas (PC) */}
+                        <div className="w-full max-w-6xl z-10 flex flex-col lg:flex-row gap-12 lg:gap-20 items-center lg:items-start justify-center">
                             
-                            <h1 className="text-3xl font-black mt-4 mb-1 text-white text-center">Simulador CC3M</h1>
-                            <p className="text-red-400 font-bold mb-6 uppercase tracking-wider text-sm text-center">Caminho da Aprovação</p>
-                            
-                            {user ? (
-                                <div className="bg-zinc-900/80 p-3 rounded-2xl w-full mb-6 border border-zinc-800 flex justify-between items-center shadow-lg">
-                                    <div className="flex items-center gap-2 text-zinc-300">
-                                        <Cloud size={16} className="text-green-400" />
-                                        <span className="text-xs font-bold uppercase tracking-wider">Conta Nuvem Ativa</span>
-                                    </div>
-                                    <div className="text-xs font-bold bg-zinc-800 px-3 py-1 rounded-full text-zinc-400">
-                                        Total Jogos: <span className="text-white">{savedStats.gamesPlayed || 0}</span>
-                                    </div>
+                            {/* Coluna Esquerda: Lily e Contexto */}
+                            <div className="w-full lg:w-5/12 flex flex-col items-center lg:items-start bg-zinc-900/60 backdrop-blur-xl p-8 lg:p-10 rounded-[2.5rem] border border-red-900/30 shadow-2xl">
+                                <div className="w-full flex justify-center lg:justify-start mb-6">
+                                    <LilyAvatar mood="thinking" />
                                 </div>
-                            ) : (
-                                <p className="text-zinc-500 text-xs mb-6 animate-pulse">Conectando à nuvem...</p>
-                            )}
-                            
-                            <p className="text-zinc-400 mb-8 text-center text-sm leading-relaxed bg-zinc-900/50 p-4 rounded-2xl border border-zinc-800">
-                                "Você acha que a Ada Wong chegou onde chegou enrolando? Rapidez! Com a graça de Deus, sobreviva a essas missões para a prova de amanhã. Eu dividi o conteúdo do professor Eli para você não surtar."
-                            </p>
-                            
-                            {/* Path das Missões */}
-                            <div className="w-full flex flex-col items-center space-y-6 relative mb-10">
-                                {/* Linha vertical atrás dos botões */}
-                                <div className="absolute top-0 bottom-0 left-1/2 transform -translate-x-1/2 w-1.5 bg-zinc-800 -z-10 rounded-full"></div>
                                 
-                                {MISSIONS_DATA.map((mission, idx) => {
-                                    const isUnlocked = mission.id <= unlockedLevel;
-                                    const isCurrent = mission.id === unlockedLevel;
-                                    const isCompleted = mission.id < unlockedLevel;
-                                    
-                                    let btnStyle = "bg-zinc-800 border-zinc-700 text-zinc-500 opacity-50 cursor-not-allowed";
-                                    let Icon = Lock;
-                                    
-                                    if (isCompleted) {
-                                        btnStyle = "bg-green-900/40 border-green-700 text-green-300 shadow-[0_0_15px_rgba(21,128,61,0.3)]";
-                                        Icon = Star;
-                                    } else if (isCurrent) {
-                                        btnStyle = "bg-red-700 border-red-500 text-white shadow-[0_0_20px_rgba(185,28,28,0.5)] mission-active cursor-pointer";
-                                        Icon = Flame;
-                                    }
-
-                                    return (
-                                        <div key={mission.id} className="flex flex-col items-center group w-full">
-                                            <button 
-                                                disabled={!isUnlocked}
-                                                onClick={() => startMission(mission.id)}
-                                                className={`w-20 h-20 rounded-full border-4 flex items-center justify-center transition-all transform ${isUnlocked ? 'hover:scale-110 active:scale-95 cursor-pointer' : ''} ${btnStyle}`}
-                                            >
-                                                <Icon size={32} fill={isCompleted ? "currentColor" : "none"} />
-                                            </button>
-                                            <div className="text-center mt-3 bg-zinc-950/80 px-4 py-1 rounded-full border border-zinc-800/50">
-                                                <h3 className={`font-black text-sm uppercase ${isUnlocked ? 'text-white' : 'text-zinc-600'}`}>{mission.title}</h3>
-                                                <p className={`text-xs font-medium ${isUnlocked ? 'text-red-400' : 'text-zinc-700'}`}>{mission.subtitle}</p>
-                                            </div>
+                                <h1 className="text-4xl md:text-5xl font-black mb-2 text-white text-center lg:text-left tracking-tight">Simulador CC3M</h1>
+                                <p className="text-red-500 font-bold mb-8 uppercase tracking-widest text-sm text-center lg:text-left">Operação Sobrevivência</p>
+                                
+                                {user ? (
+                                    <div className="bg-zinc-950/80 p-4 rounded-2xl w-full mb-8 border border-zinc-800 shadow-inner">
+                                        <div className="flex items-center gap-3 text-zinc-300 mb-3">
+                                            <Cloud size={18} className="text-green-500" />
+                                            <span className="text-xs font-black uppercase tracking-widest text-zinc-400">Progresso Sincronizado</span>
                                         </div>
-                                    );
-                                })}
+                                        <div className="flex justify-between items-center bg-zinc-900 p-3 rounded-xl border border-zinc-800/50">
+                                            <span className="text-sm font-medium text-zinc-400">Total de Missões:</span>
+                                            <span className="text-lg font-black text-white">{savedStats.gamesPlayed || 0}</span>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <p className="text-zinc-500 text-sm mb-8 animate-pulse font-medium">Conectando banco de dados...</p>
+                                )}
+                                
+                                <div className="text-zinc-300 text-base md:text-lg leading-relaxed bg-black/40 p-6 rounded-3xl border border-zinc-800/50 shadow-lg relative">
+                                    <div className="absolute top-4 left-4 text-red-900/40 text-6xl font-serif">"</div>
+                                    <p className="relative z-10 italic">
+                                        Acha que a Ada Wong chegou onde chegou perdendo o foco? Com a graça de Deus, sobreviva a essas missões para a prova de amanhã. Eu dividi o conteúdo do professor Eli para o seu cérebro processar rápido. Não me decepcione.
+                                    </p>
+                                </div>
+                                
+                                {savedStats?.allTimeWrong?.length > 0 && (
+                                    <button 
+                                        onClick={startMegaReview}
+                                        className="w-full bg-purple-900/30 border-2 border-purple-700/50 hover:bg-purple-800 hover:border-purple-500 text-purple-200 font-black py-4 rounded-2xl transition-all flex items-center justify-center gap-3 mt-8 shadow-lg shadow-purple-900/20 group"
+                                    >
+                                        <Brain size={24} className="group-hover:scale-110 transition-transform" /> REVISÃO DOS ERROS (BOSS)
+                                    </button>
+                                )}
                             </div>
+                            
+                            {/* Coluna Direita: Caminho das Missões (Estilo Mapa) */}
+                            <div className="w-full lg:w-6/12 flex flex-col items-center justify-center py-8 lg:py-12">
+                                <div className="w-full flex flex-col items-center relative">
+                                    
+                                    {MISSIONS_DATA.map((mission, idx) => {
+                                        const isUnlocked = mission.id <= unlockedLevel;
+                                        const isCurrent = mission.id === unlockedLevel;
+                                        const isCompleted = mission.id < unlockedLevel;
+                                        
+                                        // Estilos dinâmicos do botão
+                                        let btnStyle = "bg-zinc-900 border-zinc-800 text-zinc-600 cursor-not-allowed shadow-inner";
+                                        let Icon = Lock;
+                                        
+                                        if (isCompleted) {
+                                            btnStyle = "bg-green-950 border-green-700 text-green-400 shadow-[0_0_20px_rgba(21,128,61,0.2)]";
+                                            Icon = Star;
+                                        } else if (isCurrent) {
+                                            btnStyle = "bg-red-800 border-red-500 text-white shadow-[0_0_30px_rgba(220,38,38,0.4)] mission-active cursor-pointer hover:bg-red-700";
+                                            Icon = Flame;
+                                        }
 
-                            {/* Mega Revisão */}
-                            {savedStats?.allTimeWrong?.length > 0 && (
-                                <button 
-                                    onClick={startMegaReview}
-                                    className="w-full bg-purple-900/40 border border-purple-700 hover:bg-purple-800 text-purple-200 font-black py-4 rounded-2xl transition-all flex items-center justify-center gap-2 mt-4 shadow-lg shadow-purple-900/20"
-                                >
-                                    <Brain size={20} /> REVISÃO DOS ERROS (BOSS)
-                                </button>
-                            )}
+                                        // Determinar se a linha DE CIMA desta missão deve estar acesa
+                                        const isLineActive = mission.id <= unlockedLevel;
+
+                                        return (
+                                            <Fragment key={mission.id}>
+                                                {/* Conector dinâmico entre os itens (não renderiza antes do primeiro item) */}
+                                                {idx > 0 && (
+                                                    <div className={`w-3 h-16 md:h-20 rounded-full transition-colors duration-1000 ease-in-out my-2 ${isLineActive ? 'bg-red-600 shadow-[0_0_15px_rgba(220,38,38,0.6)]' : 'bg-zinc-900 border border-zinc-800/50'}`}></div>
+                                                )}
+                                                
+                                                {/* Item da Missão */}
+                                                <div className="flex flex-col md:flex-row items-center justify-center gap-6 w-full max-w-md group">
+                                                    <button 
+                                                        disabled={!isUnlocked}
+                                                        onClick={() => startMission(mission.id)}
+                                                        className={`shrink-0 w-24 h-24 md:w-28 md:h-28 rounded-full border-[6px] flex items-center justify-center transition-all transform ${isUnlocked ? 'hover:scale-110 active:scale-95' : ''} ${btnStyle}`}
+                                                    >
+                                                        <Icon size={40} fill={isCompleted ? "currentColor" : "none"} />
+                                                    </button>
+                                                    
+                                                    {/* Texto lateral no Desktop, abaixo no Mobile */}
+                                                    <div className={`text-center md:text-left bg-zinc-900/80 px-6 py-4 rounded-3xl border ${isCurrent ? 'border-red-900/50' : 'border-zinc-800/50'} shadow-lg backdrop-blur-sm w-full md:flex-1 transition-opacity ${!isUnlocked && 'opacity-50'}`}>
+                                                        <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
+                                                            <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${isCompleted ? 'bg-green-900/50 text-green-400' : isCurrent ? 'bg-red-900/50 text-red-400' : 'bg-zinc-800 text-zinc-500'}`}>
+                                                                Nível {mission.id}
+                                                            </span>
+                                                        </div>
+                                                        <h3 className={`font-black text-lg md:text-xl uppercase ${isUnlocked ? 'text-white' : 'text-zinc-500'}`}>{mission.title}</h3>
+                                                        <p className={`text-sm font-medium mt-1 ${isUnlocked ? 'text-zinc-400' : 'text-zinc-600'}`}>{mission.subtitle}</p>
+                                                    </div>
+                                                </div>
+                                            </Fragment>
+                                        );
+                                    })}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 );
@@ -380,35 +411,35 @@
                 
                 return (
                     <div className="min-h-screen flex flex-col items-center justify-center p-4">
-                        <div className="max-w-md w-full bg-zinc-900 p-8 rounded-3xl shadow-2xl text-center border border-zinc-800">
+                        <div className="max-w-xl w-full bg-zinc-900/90 backdrop-blur-xl p-10 md:p-12 rounded-[3rem] shadow-2xl text-center border border-zinc-800">
                             <LilyAvatar mood={survived ? 'happy' : 'angry'} />
                             
-                            <h2 className="text-3xl font-black mt-6 mb-2 text-white">
+                            <h2 className="text-4xl md:text-5xl font-black mt-8 mb-4 text-white tracking-tight">
                                 {survived ? "Missão Cumprida" : "Você foi Abatido"}
                             </h2>
                             
-                            <p className="text-zinc-400 mb-6 font-medium">
+                            <p className="text-zinc-300 mb-8 font-medium text-lg leading-relaxed px-4">
                                 {survived 
                                     ? "Com a ajuda de Deus, você sobreviveu a esta etapa. A Ada Wong estaria orgulhosa." 
-                                    : "Falta de foco! Zero corações. Tente novamente."}
+                                    : "Falta de foco! Zero corações. Recupere sua atenção e tente novamente."}
                             </p>
 
-                            <div className="flex justify-center gap-4 my-6">
-                                <div className="bg-zinc-800 p-4 rounded-2xl w-24 border border-zinc-700">
-                                    <span className="block text-3xl font-black text-green-500">{score}</span>
-                                    <span className="text-xs text-zinc-400 uppercase font-bold">Acertos</span>
+                            <div className="flex justify-center gap-6 my-8">
+                                <div className="bg-zinc-950/80 p-6 rounded-3xl w-32 border border-zinc-800 shadow-inner">
+                                    <span className="block text-4xl font-black text-green-500 mb-1">{score}</span>
+                                    <span className="text-xs text-zinc-500 uppercase font-black tracking-widest">Acertos</span>
                                 </div>
-                                <div className="bg-zinc-800 p-4 rounded-2xl w-24 border border-zinc-700">
-                                    <span className="block text-3xl font-black text-red-500">{quizSet.length - score}</span>
-                                    <span className="text-xs text-zinc-400 uppercase font-bold">Erros</span>
+                                <div className="bg-zinc-950/80 p-6 rounded-3xl w-32 border border-zinc-800 shadow-inner">
+                                    <span className="block text-4xl font-black text-red-500 mb-1">{quizSet.length - score}</span>
+                                    <span className="text-xs text-zinc-500 uppercase font-black tracking-widest">Erros</span>
                                 </div>
                             </div>
                             
                             <button 
                                 onClick={() => setStep('intro')}
-                                className="w-full bg-red-700 hover:bg-red-600 text-white font-black py-4 rounded-2xl transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2 mt-6 shadow-lg shadow-red-900/50"
+                                className="w-full bg-red-700 hover:bg-red-600 text-white font-black text-lg py-5 rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 mt-6 shadow-[0_0_20px_rgba(185,28,28,0.4)]"
                             >
-                                <ArrowRight size={20} /> VOLTAR AO MAPA
+                                <ArrowRight size={24} /> VOLTAR AO MAPA
                             </button>
                         </div>
                     </div>
@@ -418,53 +449,66 @@
             const currentQuestion = quizSet[currentIndex];
 
             return (
-                <div className="min-h-screen flex flex-col max-w-2xl mx-auto md:py-8 bg-zinc-950">
+                <div className="min-h-screen flex flex-col items-center py-6 px-4 md:py-10 relative">
                     
-                    {/* Header: Progresso e Corações */}
-                    <div className="flex items-center justify-between p-4 mb-4 bg-zinc-900/50 border-b border-zinc-800 sticky top-0 z-20 backdrop-blur-md md:rounded-3xl md:border">
-                        <div className="flex items-center gap-3">
-                            <button onClick={() => setStep('intro')} className="text-zinc-500 hover:text-white transition-colors">
-                                <RotateCcw size={20} />
-                            </button>
-                            <span className="font-black text-sm text-zinc-400 uppercase tracking-wider hidden sm:block">
-                                {activeMission?.title}
-                            </span>
-                        </div>
-                        <div className="flex-1 mx-4 bg-zinc-800 h-3 rounded-full overflow-hidden border border-zinc-700 max-w-[200px]">
-                            <div 
-                                className="h-full bg-green-500 transition-all duration-300 ease-out"
-                                style={{ width: `${((currentIndex) / quizSet.length) * 100}%` }}
-                            />
-                        </div>
-                        <div className="flex items-center gap-1.5 font-black text-red-500 text-xl">
-                            <Heart size={24} fill="currentColor" className={hearts === 1 ? 'animate-pulse' : ''} />
-                            <span>{hearts}</span>
-                        </div>
-                    </div>
-
-                    <div className="flex-1 flex flex-col px-4">
-                        <div className="flex gap-4 mb-8 items-start">
-                            <LilyAvatar mood={mood} />
-                            <div className="relative bg-zinc-800 p-5 rounded-3xl rounded-tl-none flex-1 shadow-lg border border-zinc-700 mt-2">
-                                <div className="absolute -left-3 top-0 w-0 h-0 border-t-[15px] border-t-zinc-800 border-l-[15px] border-l-transparent"></div>
-                                <p className="text-xs font-black text-red-400 uppercase mb-2 tracking-wider flex items-center justify-between">
-                                    <span>{currentQuestion?.topic}</span>
-                                    <span className="text-zinc-500 bg-zinc-900 px-2 rounded">{currentIndex + 1}/{quizSet.length}</span>
-                                </p>
-                                <p className="text-[17px] leading-relaxed font-medium text-white">{currentQuestion?.question}</p>
+                    {/* Container Focado para PC (max-w-4xl em vez de max-w-2xl para aproveitar o espaço, mas sem perder a leitura) */}
+                    <div className="w-full max-w-4xl flex flex-col flex-1 relative z-10">
+                        
+                        {/* Header Fixo e Amplo */}
+                        <div className="flex items-center justify-between p-5 mb-8 bg-zinc-900/80 border border-zinc-800/80 backdrop-blur-xl rounded-3xl shadow-lg sticky top-4 z-20">
+                            <div className="flex items-center gap-4">
+                                <button onClick={() => setStep('intro')} className="bg-zinc-800 hover:bg-zinc-700 p-2.5 rounded-xl text-zinc-400 hover:text-white transition-colors">
+                                    <RotateCcw size={22} />
+                                </button>
+                                <div className="hidden sm:flex flex-col">
+                                    <span className="font-black text-sm text-white uppercase tracking-widest">
+                                        {activeMission?.title}
+                                    </span>
+                                    <span className="text-xs font-bold text-red-500">OPERAÇÃO EM ANDAMENTO</span>
+                                </div>
+                            </div>
+                            
+                            <div className="flex-1 mx-6 lg:mx-12 bg-zinc-950 h-4 rounded-full overflow-hidden border border-zinc-800/50 shadow-inner">
+                                <div 
+                                    className="h-full bg-gradient-to-r from-red-600 to-red-500 transition-all duration-500 ease-out"
+                                    style={{ width: `${((currentIndex) / quizSet.length) * 100}%` }}
+                                />
+                            </div>
+                            
+                            <div className="flex items-center gap-2 font-black text-red-500 text-2xl bg-red-950/30 px-4 py-2 rounded-2xl border border-red-900/30">
+                                <Heart size={28} fill="currentColor" className={hearts === 1 ? 'animate-pulse' : ''} />
+                                <span>{hearts}</span>
                             </div>
                         </div>
 
-                        <div className="space-y-3 pb-36">
+                        {/* Área da Pergunta */}
+                        <div className="flex flex-col md:flex-row gap-6 lg:gap-8 mb-10 items-center md:items-start">
+                            <LilyAvatar mood={mood} />
+                            <div className="relative bg-zinc-900/90 p-8 md:p-10 rounded-[2.5rem] md:rounded-tl-none flex-1 shadow-2xl border border-zinc-800 backdrop-blur-sm">
+                                {/* Triângulo do balão (visível só no desktop) */}
+                                <div className="hidden md:block absolute -left-4 top-10 w-0 h-0 border-t-[20px] border-t-zinc-900/90 border-l-[20px] border-l-transparent"></div>
+                                
+                                <div className="flex items-center justify-between mb-4 border-b border-zinc-800/50 pb-4">
+                                    <p className="text-sm font-black text-red-500 uppercase tracking-widest flex items-center gap-2">
+                                        <Info size={16} /> {currentQuestion?.topic}
+                                    </p>
+                                    <span className="text-zinc-500 font-bold bg-zinc-950 px-3 py-1 rounded-lg text-sm">{currentIndex + 1} DE {quizSet.length}</span>
+                                </div>
+                                <p className="text-xl md:text-2xl leading-relaxed font-medium text-white tracking-wide">{currentQuestion?.question}</p>
+                            </div>
+                        </div>
+
+                        {/* Opções de Resposta: Mais largas, com bom espaçamento */}
+                        <div className="space-y-4 pb-40">
                             {currentQuestion?.options.map((opt, i) => {
-                                let style = "border-zinc-700 bg-zinc-900 hover:bg-zinc-800 text-white";
+                                let style = "border-zinc-800 bg-zinc-900/60 hover:bg-zinc-800 hover:border-zinc-600 text-zinc-200";
                                 if (isAnswered) {
                                     if (i === currentQuestion.correct) {
-                                        style = "border-green-500 bg-green-500/20 text-green-300";
+                                        style = "border-green-500 bg-green-900/30 text-green-300 shadow-[0_0_20px_rgba(21,128,61,0.2)] z-10 relative";
                                     } else if (i === selectedOption) {
-                                        style = "border-red-500 bg-red-500/20 text-red-300";
+                                        style = "border-red-500 bg-red-900/30 text-red-300 shadow-[0_0_20px_rgba(220,38,38,0.2)]";
                                     } else {
-                                        style = "border-zinc-800 bg-zinc-900/50 opacity-40 text-zinc-500";
+                                        style = "border-zinc-800 bg-zinc-950/50 opacity-40 text-zinc-600";
                                     }
                                 }
 
@@ -473,7 +517,7 @@
                                         key={i}
                                         disabled={isAnswered}
                                         onClick={() => handleAnswer(i)}
-                                        className={`w-full p-4 rounded-2xl border-2 text-left font-medium transition-all duration-150 transform active:scale-[0.98] ${style}`}
+                                        className={`w-full p-6 md:p-8 rounded-[2rem] border-2 text-left font-medium md:text-lg transition-all duration-200 transform active:scale-[0.99] ${style}`}
                                     >
                                         {opt}
                                     </button>
@@ -482,54 +526,58 @@
                         </div>
                     </div>
 
-                    {/* Bottom Action Bar */}
-                    <div className={`fixed bottom-0 left-0 right-0 p-4 border-t transition-all duration-300 transform md:max-w-2xl md:mx-auto md:rounded-t-3xl z-30 ${
+                    {/* Bottom Action Bar: Fixa, grande, assertiva */}
+                    <div className={`fixed bottom-0 left-0 right-0 p-6 border-t-2 transition-all duration-300 transform z-30 flex justify-center backdrop-blur-xl ${
                         isAnswered 
-                            ? (isCorrect ? 'bg-zinc-900 border-green-900/50' : 'bg-zinc-900 border-red-900/50') 
-                            : 'translate-y-full bg-zinc-900 border-zinc-800'
+                            ? (isCorrect ? 'bg-zinc-950/95 border-green-900/50' : 'bg-zinc-950/95 border-red-900/50') 
+                            : 'translate-y-full bg-zinc-950/95 border-zinc-900'
                     }`}>
-                        
-                        {isAnswered && (
-                            <div className="mb-4 max-h-40 overflow-y-auto">
-                                <div className="flex items-center gap-2 mb-2">
-                                    {isCorrect ? <CheckCircle2 className="text-green-500" size={24} /> : <XCircle className="text-red-500" size={24} />}
-                                    <span className={`font-black text-lg ${isCorrect ? 'text-green-500' : 'text-red-500'}`}>
-                                        {isCorrect ? 'Perfeito. Rápido e limpo.' : 'Inaceitável. Memorize isso.'}
-                                    </span>
+                        <div className="w-full max-w-4xl flex flex-col md:flex-row items-center justify-between gap-6">
+                            
+                            {isAnswered && (
+                                <div className="flex-1 w-full overflow-y-auto max-h-40 md:max-h-full pr-4">
+                                    <div className="flex items-center gap-3 mb-3">
+                                        {isCorrect ? <CheckCircle2 className="text-green-500" size={32} /> : <XCircle className="text-red-500" size={32} />}
+                                        <span className={`font-black text-2xl tracking-tight ${isCorrect ? 'text-green-500' : 'text-red-500'}`}>
+                                            {isCorrect ? 'Perfeito. Focado e cirúrgico.' : 'Inaceitável. Revise isso.'}
+                                        </span>
+                                    </div>
+                                    <p className="text-base text-zinc-300 bg-zinc-900 p-4 rounded-2xl border border-zinc-800 shadow-inner">
+                                        {currentQuestion.rationale}
+                                    </p>
                                 </div>
-                                <p className="text-sm text-zinc-300 bg-zinc-800 p-3 rounded-xl border border-zinc-700">
-                                    {currentQuestion.rationale}
-                                </p>
-                            </div>
-                        )}
+                            )}
 
-                        <button
-                            onClick={nextQuestion}
-                            disabled={!isAnswered}
-                            className={`w-full py-4 rounded-2xl font-black flex items-center justify-center gap-2 transition-all transform active:scale-95 ${
-                                isAnswered 
-                                    ? (isCorrect ? 'bg-green-600 hover:bg-green-500 text-white' : 'bg-red-700 hover:bg-red-600 text-white') 
-                                    : 'bg-zinc-800 text-zinc-600 cursor-not-allowed hidden'
-                            }`}
-                        >
-                            AVANÇAR <ArrowRight size={20} />
-                        </button>
+                            <button
+                                onClick={nextQuestion}
+                                disabled={!isAnswered}
+                                className={`w-full md:w-auto md:min-w-[250px] shrink-0 py-5 px-8 rounded-2xl font-black text-xl flex items-center justify-center gap-3 transition-all transform hover:scale-105 active:scale-95 shadow-2xl ${
+                                    isAnswered 
+                                        ? (isCorrect ? 'bg-green-600 hover:bg-green-500 text-white shadow-green-900/50' : 'bg-red-700 hover:bg-red-600 text-white shadow-red-900/50') 
+                                        : 'bg-zinc-800 text-zinc-600 cursor-not-allowed hidden'
+                                }`}
+                            >
+                                AVANÇAR <ArrowRight size={24} />
+                            </button>
+                        </div>
                     </div>
 
-                    {/* Game Over Modal Embutido */}
+                    {/* Modal de Falha (Game Over) */}
                     {hearts === 0 && (
-                        <div className="fixed inset-0 bg-zinc-950/95 flex flex-col items-center justify-center p-6 z-50 backdrop-blur-sm">
-                            <AlertTriangle size={80} className="text-red-600 mb-6 animate-pulse" />
-                            <h2 className="text-3xl font-black text-white mb-2 text-center uppercase tracking-widest">Missão Falhou</h2>
-                            <p className="text-zinc-400 text-center mb-8 max-w-sm text-base leading-relaxed bg-zinc-900 p-4 rounded-2xl border border-red-900/30">
-                                A Ada Wong não tolera fraqueza. Você perdeu todos os seus corações. Deus te dê paciência, pois você terá que começar esta missão de novo.
-                            </p>
-                            <button 
-                                onClick={() => setStep('intro')}
-                                className="w-full max-w-xs bg-red-700 text-white hover:bg-red-600 font-black py-4 rounded-2xl transition-all transform hover:scale-105 active:scale-95 flex justify-center items-center gap-2 shadow-lg shadow-red-900/50"
-                            >
-                                <RotateCcw size={20} /> RETORNAR AO MAPA
-                            </button>
+                        <div className="fixed inset-0 bg-black/90 flex flex-col items-center justify-center p-6 z-50 backdrop-blur-md">
+                            <div className="max-w-lg w-full bg-zinc-900 p-10 rounded-[3rem] border-2 border-red-900/50 flex flex-col items-center shadow-[0_0_50px_rgba(153,27,27,0.3)]">
+                                <AlertTriangle size={100} className="text-red-600 mb-8 animate-pulse drop-shadow-[0_0_15px_rgba(220,38,38,0.8)]" />
+                                <h2 className="text-4xl font-black text-white mb-4 text-center uppercase tracking-widest">Missão Falhou</h2>
+                                <p className="text-zinc-300 text-center mb-10 text-lg leading-relaxed bg-zinc-950 p-6 rounded-3xl border border-red-900/30">
+                                    A Ada Wong não tolera fraqueza. Você perdeu todos os seus corações. Ore a Deus por paciência, recupere o foco absoluto e tente esta missão de novo.
+                                </p>
+                                <button 
+                                    onClick={() => setStep('intro')}
+                                    className="w-full bg-red-700 text-white hover:bg-red-600 font-black text-xl py-5 rounded-2xl transition-all transform hover:scale-105 active:scale-95 flex justify-center items-center gap-3 shadow-[0_0_20px_rgba(220,38,38,0.4)]"
+                                >
+                                    <RotateCcw size={24} /> RETORNAR AO MAPA
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>
