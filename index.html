@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Treino Estatística - Missão Lily</title>
+    <title>Treino Estatística - Missão Ada</title>
     
     <!-- Tailwind CSS (via CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -76,6 +76,7 @@
         const Star = ({ size, className, fill }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>;
 
         const ALL_QUESTIONS = [
+            // MISSÃO 1 a 6 misturadas (Elas serão filtradas pelo ID)
             { id: 1, topic: "Função Massa de Probabilidade (PMF)", question: "Uma API recebe X tickets urgentes por hora. As probabilidades são P(0)=0.40, P(1)=0.35, P(2)=0.20. Qual deve ser o valor de P(3) para que esta distribuição seja válida?", options: ["0.05", "0.15", "0.10", "1.00"], correct: 0, rationale: "Toda PMF deve somar exatamente 1. 0.40 + 0.35 + 0.20 = 0.95. Logo, 1 - 0.95 = 0.05.", hint: "Lembre-se da regra de ouro: A soma de todas as probabilidades possíveis tem de ser igual a 1." },
             { id: 2, topic: "Esperança Matemática", question: "Usando os dados da API: 0(0.40), 1(0.35), 2(0.20) e 3(0.05). Qual é a média esperada E(X) de tickets urgentes por hora?", options: ["0.75", "0.90", "1.60", "1.00"], correct: 1, rationale: "E(X) = (0 * 0.40) + (1 * 0.35) + (2 * 0.20) + (3 * 0.05) = 0 + 0.35 + 0.40 + 0.15 = 0.90 tickets/hora.", hint: "A esperança é a soma de cada valor multiplicado pela sua probabilidade." },
             { id: 3, topic: "Variância", question: "A variância mede o quê em relação à distribuição dos dados?", options: ["A soma de todas as probabilidades.", "A dispersão dos valores em relação ao centro (média) da distribuição.", "A probabilidade do evento de maior sucesso.", "A diferença entre o maior e o menor erro."], correct: 1, rationale: "Var(X) mede o espalhamento (dispersão) dos dados em torno da média esperada E(X).", hint: "Pense em quão 'espalhados' ou 'concentrados' os valores estão." },
@@ -88,53 +89,47 @@
             { id: 10, topic: "Correlação de Pearson", question: "O cálculo de correlação entre 'Utilizadores ativos (X)' e 'Latência média (Y)' resultou em r = 0.82. O que isso indica?", options: ["Associação linear positiva forte: mais utilizadores tendem a gerar maior latência.", "Associação fraca e muita dispersão de dados.", "Causalidade comprovada: os utilizadores são a única causa da lentidão.", "Relação decrescente: a latência cai quando os utilizadores aumentam."], correct: 0, rationale: "Um r=0.82 é próximo de +1, indicando tendência positiva e forte. Mas ATENÇÃO: correlação NÃO implica causalidade automática.", hint: "Olhe para o sinal (positivo) e para a magnitude (perto de 1 é forte)." },
             { id: 11, topic: "Causalidade x Correlação", question: "Se r=0.90 entre duas variáveis de um sistema, podemos afirmar causalidade com base apenas nisso?", options: ["Sim, r > 0.8 já comprova causalidade.", "Não, pois pode haver uma variável de confusão influenciando ambas (ex: pico de horário ou deploy recente).", "Sim, desde que a amostra seja superior a 30.", "Não, pois r deveria ser exatamente 1.00 para provar causalidade."], correct: 1, rationale: "Correlação não é causalidade. Você precisa de experiências controladas ou ordem temporal para provar causa e efeito.", hint: "Duas coisas a crescerem juntas não significa que uma puxa a outra. Pode haver um terceiro elemento na história." },
             { id: 12, topic: "Regra Empírica (Curva Normal)", question: "Pela regra empírica da Normal, aproximadamente qual a percentagem dos dados que fica a 2 desvios-padrão (±2σ) de distância da média?", options: ["68%", "95%", "99.7%", "50%"], correct: 1, rationale: "Regra empírica: ±1σ = ~68%, ±2σ = ~95%, ±3σ = ~99.7%. O diapositivo do professor cobra isso (95.44% exato, ou 95% prático).", hint: "Lembre-se do gráfico em sino. ±1 desvio é a maioria simples, ±2 desvios abrange a grande maioria." },
-            // ==========================================
+            
             // MISSÃO 1: PMF, ESPERANÇA E VARIÂNCIA
-            // ==========================================
             { id: 13, topic: "PMF (Regra de Ouro)", question: "No seu jogo 'Cinzas de Eldhaven', um boss dropa itens com a seguinte PMF: P(0 itens)=0.10, P(1)=0.50, P(2)=0.25. Qual a probabilidade do boss dropar 3 itens, sabendo que 3 é o limite máximo?", options: ["0.15", "0.25", "0.05", "1.00"], correct: 0, rationale: "A soma tem de ser 1. Temos 0.10 + 0.50 + 0.25 = 0.85. Logo, 1.00 - 0.85 = 0.15.", hint: "Some tudo o que já existe e subtraia de 1." },
             { id: 14, topic: "Esperança Matemática", question: "Usando o drop do boss: 0(0.10), 1(0.50), 2(0.25) e 3(0.15). Quantos itens você ESPERA que ele drope em média por combate?", options: ["1.45 itens", "1.50 itens", "2.00 itens", "1.00 item"], correct: 0, rationale: "E(X) = (0 * 0.10) + (1 * 0.50) + (2 * 0.25) + (3 * 0.15) = 0 + 0.50 + 0.50 + 0.45 = 1.45.", hint: "Multiplique a quantidade de itens pela probabilidade e some tudo." },
             { id: 15, topic: "PMF com Incógnitas", question: "Um teste no Project PEGASUS retorna erros: P(0)=0.60, P(1)=c, P(2)=c, P(3)=0.10. Qual é o valor de c?", options: ["0.15", "0.30", "0.10", "0.20"], correct: 0, rationale: "0.60 + 0.10 = 0.70. Faltam 0.30 para chegar a 1. Como temos dois 'c', dividimos 0.30 por 2 = 0.15.", hint: "Ache o que falta para 100% e divida pelas letras iguais." },
             { id: 16, topic: "Variância Conceitual", question: "Se o tempo de compilação do seu código tem Esperança de 12s e Variância de 0s, o que isso significa na prática?", options: ["O código sempre compila em exatamente 12s, sem nenhuma variação.", "Há um erro de cálculo, a variância não pode ser zero.", "O código demora em média 12s, mas às vezes vai a 24s.", "A probabilidade de erro é zero."], correct: 0, rationale: "Variância zero significa dispersão nula. Todos os valores do conjunto são exatamente iguais à média.", hint: "Se algo não varia, como ele se comporta?" },
             { id: 17, topic: "Esperança (Jogo Justo)", question: "Num jogo de dados, você paga R$5 para jogar. Se ganhar, recebe R$10 (lucro de R$5). Se perder, não recebe nada (prejuízo de R$5). A chance de ganhar é 50%. Qual a Esperança de lucro?", options: ["R$0 (Jogo Justo)", "R$5", "R$2.50", "-R$5"], correct: 0, rationale: "E(X) = (5 * 0.50) + (-5 * 0.50) = 2.50 - 2.50 = 0. Um jogo com esperança zero é matematicamente justo.", hint: "Considere valores negativos para perdas." },
-            // ==========================================
+            
             // MISSÃO 2: DISTRIBUIÇÃO BINOMIAL
-            // ==========================================
             { id: 18, topic: "Binomial Clássica", question: "O Leon Kennedy tem 90% de precisão (p=0.90) com a pistola. Se ele atirar 3 vezes (n=3), qual a chance de acertar EXATAMENTE 2 tiros?", options: ["0.243", "0.810", "0.081", "0.729"], correct: 0, rationale: "P(X=2) = C(3,2) * (0.90)^2 * (0.10)^1. Fica 3 * 0.81 * 0.10 = 0.243.", hint: "Fórmula: Combinação(n,k) * p^k * (1-p)^(n-k)." },
             { id: 19, topic: "Binomial - Esperança", question: "Um Black Templar atira 50 vezes com um Bolter. Cada tiro tem 80% de chance de matar um herege. Qual a Esperança E(X) de abates?", options: ["40", "50", "8", "10"], correct: 0, rationale: "Na Binomial, o atalho para a média é E(X) = n * p. Logo, 50 * 0.80 = 40.", hint: "Multiplique o número de tentativas pela probabilidade de sucesso." },
             { id: 20, topic: "Binomial - Variância", question: "Ainda no caso do Black Templar (n=50, p=0.80). Qual é a Variância Var(X) do número de abates?", options: ["8", "40", "10", "16"], correct: 0, rationale: "Na Binomial, Var(X) = n * p * (1-p). Logo, 50 * 0.80 * 0.20 = 40 * 0.20 = 8.", hint: "O atalho é: multiplique a média (n*p) pela chance de erro (1-p)." },
             { id: 21, topic: "Binomial (Chance de Zero)", question: "Você bebe 4 latas de Monster Zero Ultra na semana. A chance de uma lata vir amassada é 5% (0.05). Qual a chance de NENHUMA lata vir amassada?", options: ["0.8145 (aprox 81.4%)", "0.20", "0.000006", "0.95"], correct: 0, rationale: "P(X=0) = C(4,0) * (0.05)^0 * (0.95)^4. C(4,0) é 1. Logo, basta fazer 0.95 elevado à 4ª potência = 0.8145.", hint: "Se quer zero sucessos, calcule apenas a probabilidade de falhar em todas as vezes." },
-            // ==========================================
+            
             // MISSÃO 3: DISTRIBUIÇÃO DE POISSON
-            // ==========================================
             { id: 22, topic: "Poisson Clássica", question: "A Ada Wong invade servidores e encontra uma média de 2 falhas de segurança por hora (λ = 2). Qual a probabilidade de achar EXATAMENTE 0 falhas em uma hora? (Use e^-2 = 0.135)", options: ["0.135", "0.000", "2.000", "0.865"], correct: 0, rationale: "Fórmula: P(x) = (e^-λ * λ^x) / x!. Para x=0, fica (0.135 * 2^0) / 0! = (0.135 * 1) / 1 = 0.135.", hint: "Lembre-se que qualquer número elevado a zero é 1, e o fatorial de zero (0!) também é 1." },
             { id: 23, topic: "Poisson (Ajuste de Taxa)", question: "Sua loja recebe em média 6 pedidos de kimonos GB1 V2 por dia (λ = 6). Qual deve ser o λ se você quiser calcular a probabilidade de pedidos em MEIO dia (12 horas)?", options: ["λ = 3", "λ = 12", "λ = 6", "λ = 1.5"], correct: 0, rationale: "Poisson é proporcional ao tempo/espaço. Se o tempo cai pela metade (de 24h para 12h), a taxa λ também cai pela metade (6 / 2 = 3).", hint: "Ajuste o Lambda de acordo com a fração de tempo solicitada." },
             { id: 24, topic: "Poisson - Esperança e Variância", question: "Se um evento segue Poisson com média λ = 5, qual é a Variância desse evento?", options: ["5", "25", "2.5", "Falta informação"], correct: 0, rationale: "A grande mágica da distribuição de Poisson é que a Esperança E(X) é SEMPRE igual à Variância Var(X). Logo, Var(X) = λ = 5.", hint: "Na Poisson, a Média e a Variância são exatamente o mesmo número." },
             { id: 25, topic: "Poisson vs Binomial", question: "Quando é ideal usar a aproximação de Poisson em vez da Binomial?", options: ["Quando 'n' é muito grande e 'p' é muito pequeno (eventos raros).", "Quando a probabilidade 'p' é 0.50 (50%).", "Quando as amostras são dependentes.", "Quando 'n' é menor que 10."], correct: 0, rationale: "Poisson é a 'distribuição dos eventos raros'. Usamos quando temos muitas tentativas (n > 30), mas a chance do evento (p) é quase zero (ex: chance de queda de raio).", hint: "Lembre-se da regra: Muitos testes, chance quase nula de acontecer." },
-            // ==========================================
+            
             // MISSÃO 4: DISTRIBUIÇÃO NORMAL & Z-SCORE
-            // ==========================================
             { id: 26, topic: "Z-Score (Fórmula)", question: "Você está treinando HIIT. Seu batimento médio é 160bpm (μ=160), com desvio-padrão de 10bpm (σ=10). Se você atingiu 180bpm, qual é o seu Z-Score?", options: ["Z = 2", "Z = 20", "Z = 1.5", "Z = -2"], correct: 0, rationale: "Z = (X - μ) / σ. Fica (180 - 160) / 10 = 20 / 10 = 2.", hint: "Subtraia a média do seu valor e divida pelo desvio-padrão." },
             { id: 27, topic: "Z-Score Negativo", question: "Se a média da turma na prova do Eli foi 7.0 e o seu Z-score foi -1.5, o que aconteceu?", options: ["Sua nota ficou 1.5 desvios-padrão ABAIXO da média da turma.", "Você tirou nota negativa na prova.", "Sua nota foi exatamente 5.5.", "Você foi o melhor da turma."], correct: 0, rationale: "Z negativo indica sempre que o valor está à esquerda (abaixo) da média. Não sabemos a nota exata sem saber o desvio-padrão.", hint: "O sinal do Z só indica a direção em relação ao centro (média)." },
             { id: 28, topic: "Regra Empírica (3 Sigma)", question: "Na curva Normal, qual a porcentagem dos dados que fica dentro de 3 desvios-padrão (±3σ) da média?", options: ["Aproximadamente 99.7%", "100%", "95%", "68%"], correct: 0, rationale: "A regra de ouro (68-95-99.7) afirma que quase todos os dados (99.7%) estão contidos num intervalo de ±3σ. Valores fora disso são outliers extremos.", hint: "Lembre-se: ±1 = 68%, ±2 = 95%, ±3 = quase 100%." },
             { id: 29, topic: "Área sob a Curva Normal", question: "Qual é a área total abaixo da curva de densidade de probabilidade de qualquer distribuição Normal?", options: ["1.00", "Varia conforme a média", "Varia conforme o desvio-padrão", "0.50"], correct: 0, rationale: "A área sob QUALQUER curva de probabilidade é sempre igual a 1 (que representa 100% dos eventos possíveis).", hint: "Probabilidade total nunca muda, não importa a forma do sino." },
             { id: 30, topic: "Simetria da Normal", question: "Sabendo que a curva Normal é perfeitamente simétrica em relação à média, qual a probabilidade de um valor aleatório ser MAIOR que a média?", options: ["0.50 (50%)", "1.00 (100%)", "0.68 (68%)", "Depende do Z-score"], correct: 0, rationale: "Como o sino é cortado exatamente ao meio pela média, metade dos dados (50%) está à esquerda e metade (50%) está à direita.", hint: "Corte uma maçã perfeitamente simétrica ao meio." },
-            // ==========================================
+            
             // MISSÃO 5: TCL, ERRO-PADRÃO E I.C.
-            // ==========================================
             { id: 31, topic: "Erro-Padrão (Conceito)", question: "Se você aumentar o tamanho da sua amostra (n) num experimento do PEGASUS, o que acontece com o Erro-Padrão da média?", options: ["O Erro-Padrão diminui (a estimativa fica mais precisa).", "O Erro-Padrão aumenta.", "Permanece o mesmo.", "A média amostral torna-se zero."], correct: 0, rationale: "Como a fórmula é σ / √n, aumentar o 'n' (denominador) faz o resultado final diminuir. Mais dados = menos erro.", hint: "A matemática é clara: dividir por um número maior gera um resultado menor." },
             { id: 32, topic: "TCL na Prática", question: "A distribuição do dano das espadas em Skyrim NÃO é Normal (é assimétrica). Mas se você tirar amostras grandes de 50 golpes e calcular a média, como será a distribuição dessas médias?", options: ["Aproximadamente Normal, graças ao Teorema Central do Limite.", "Assimétrica, exatamente como a população original.", "Uniforme.", "Binomial."], correct: 0, rationale: "O TCL garante que, para n grande (geralmente n >= 30), a distribuição das MÉDIAS da amostra aproxima-se da Normal, mesmo que os dados originais sejam o caos puro.", hint: "A resposta é sempre a curva do sino quando falamos de 'médias de amostras grandes'." },
             { id: 33, topic: "Intervalo de Confiança (Tamanho)", question: "Você tem um Intervalo de Confiança (IC) de 95%. Se você quiser ter 99% de confiança usando os mesmos dados, o que acontecerá com o TAMANHO (largura) desse intervalo?", options: ["O intervalo ficará mais largo (menos preciso).", "O intervalo ficará mais estreito (mais preciso).", "Não muda de tamanho.", "O Erro-Padrão será zerado."], correct: 0, rationale: "Para ter MAIS certeza de capturar a média verdadeira, você precisa usar uma 'rede' maior. Maior confiança = IC mais largo.", hint: "Pense num alvo: se quer ter 99% de certeza de acertar com os olhos vendados, o alvo tem de ser gigantesco." },
             { id: 34, topic: "Intervalo de Confiança (Interpretação)", question: "Uma pesquisa eleitoral diz: 'O candidato X tem 40% das intenções de voto, com margem de erro de 2% e confiança de 95%'. O que significa esse 95%?", options: ["Se repetirmos esta pesquisa 100 vezes, o resultado real estará dentro da margem de erro em cerca de 95 delas.", "Há 95% de chance do candidato vencer.", "95% dos eleitores não vão mudar de ideia.", "Ele tem entre 38% e 42% dos votos com certeza absoluta."], correct: 0, rationale: "O Nível de Confiança refere-se ao MÉTODO. Significa que o processo de tirar amostras acerta a faixa correta em 95% das tentativas a longo prazo.", hint: "A confiança é sempre sobre a eficácia do seu procedimento de amostragem." },
-            // ==========================================
+            
             // MISSÃO 6: CORRELAÇÃO E CAUSALIDADE
-            // ==========================================
             { id: 35, topic: "Correlação (Limites do R)", question: "O professor Eli pede para você calcular a Correlação de Pearson (r) entre horas de estudo e nota na prova. Você acha r = 1.25. O que isso significa?", options: ["Você errou o cálculo matemático.", "A relação é perfeitamente positiva e muito forte.", "Quanto mais estuda, maior a nota.", "É uma relação de causalidade comprovada."], correct: 0, rationale: "O coeficiente de Pearson (r) SÓ pode existir no intervalo entre -1 e +1. Um valor de 1.25 indica obrigatoriamente um erro na sua calculadora.", hint: "Lembre-se dos limites matemáticos universais do índice R." },
             { id: 36, topic: "Correlação Negativa", question: "Se r = -0.85 entre faltas nas aulas e nota final, como interpretamos o gráfico de dispersão?", options: ["Os pontos formam uma linha inclinada para baixo: mais faltas = menor nota.", "Os pontos formam uma linha para cima, mas com muitos erros.", "A correlação é muito fraca por ser negativa.", "O professor reduz notas de quem falta propositalmente (causalidade)."], correct: 0, rationale: "Sinal negativo (r < 0) significa inversamente proporcional. Uma variável sobe, a outra desce. O valor 0.85 indica que os pontos estão bem próximos de formar uma linha (forte).", hint: "Negativo significa que vão em direções opostas." },
             { id: 37, topic: "Correlação vs Causalidade 2", question: "O consumo de Monster Energy aumenta no verão, e os afogamentos em praias também. r = 0.92. Podemos concluir que Monster causa afogamentos?", options: ["Não, trata-se de uma correlação espúria. O calor do verão é a variável de confusão que causa ambos.", "Sim, r > 0.90 prova causalidade estatística.", "Não, precisamos de um r = 1.0 para provar isso.", "Sim, a energia a mais faz as pessoas nadarem longe demais."], correct: 0, rationale: "Correlação NUNCA prova causalidade. Quando duas coisas sobem juntas por causa de um terceiro fator oculto (o clima), chamamos isso de variável de confusão.", hint: "Procure sempre pelo 'terceiro elemento' oculto na história." },
             { id: 38, topic: "R quadrado (Coeficiente de Determinação)", question: "Se r = 0.80, o coeficiente de determinação (R²) é 0.64 (64%). Qual a interpretação letal para R² no exame do Eli?", options: ["64% da variação na variável Y é explicada pela variação na variável X.", "Há 64% de chance de X causar Y.", "64% dos pontos tocam exatamente na linha de regressão.", "A margem de erro é de 36%."], correct: 0, rationale: "R² (r ao quadrado) é a 'porcentagem da variância explicada'. Ele mede o quanto a mudança de um dado é justificada pela mudança do outro no modelo linear.", hint: "R² fala sobre o poder de 'explicação' de uma variável sobre a outra." }
         ];
 
-        // Definição das Missões
+        // Definição das Missões (Total de 6 Missões)
         const MISSIONS_DATA = [
             { id: 1, title: "Fundamentos Rápidos", subtitle: "PMF, Esperança e Variância", qIds: [1, 2, 3, 13, 14, 15, 16, 17] },
             { id: 2, title: "Distribuição Binomial", subtitle: "Chances de Sucesso Fixo", qIds: [4, 18, 19, 20, 21] },
@@ -146,31 +141,32 @@
 
         const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
 
-        const LilyAvatar = ({ mood }) => {
+        // Componente Ada Wong Avatar com a sua lógica de imagem corrigida
+        const AdaAvatar = ({ mood }) => {
             const getStyle = () => {
                 switch(mood) {
-                    case 'happy': return 'bg-green-600 border-green-500 shadow-[0_0_20px_rgba(74,222,128,0.4)]';
-                    case 'angry': return 'bg-red-700 border-red-500 shadow-[0_0_25px_rgba(239,68,68,0.6)]';
-                    case 'thinking': return 'bg-red-950 border-red-800 shadow-[0_0_15px_rgba(153,27,27,0.3)]';
-                    default: return 'bg-zinc-800 border-zinc-700';
+                    case 'happy': return 'border-green-500 shadow-[0_0_20px_rgba(74,222,128,0.4)]';
+                    case 'angry': return 'border-red-500 shadow-[0_0_25px_rgba(239,68,68,0.6)]';
+                    case 'thinking': return 'border-red-800 shadow-[0_0_15px_rgba(153,27,27,0.3)]';
+                    default: return 'border-zinc-700';
                 }
             };
 
-            const getFace = () => {
+            const getImage = () => {
                 switch(mood) {
-                    case 'happy': return '( ⌐■_■)';
-                    case 'angry': return '( ಠ_ಠ )';
-                    case 'thinking': return '( ¬_¬)';
-                    default: return '( •_•)';
+                    case 'happy': return './src/ADAHAPPY.png';
+                    case 'angry': return './src/ADAMAD.png';
+                    case 'thinking': return './src/ADAWAITING.png';
+                    default: return './src/ADAWAITING.png';
                 }
             };
 
             return (
                 <div className="flex flex-col items-center z-10 shrink-0">
-                    <div className={`w-24 h-24 md:w-32 md:h-32 rounded-full border-[5px] flex items-center justify-center text-white text-3xl md:text-5xl font-black transition-all duration-300 ${getStyle()}`}>
-                        {getFace()}
+                    <div className={`w-24 h-24 md:w-32 md:h-32 rounded-full border-[5px] flex items-center justify-center overflow-hidden transition-all duration-300 ${getStyle()} bg-zinc-800`}>
+                        <img src={getImage()} alt={`Ada ${mood}`} className="w-full h-full object-cover object-top" />
                     </div>
-                    <span className="text-sm font-black mt-3 text-red-400 uppercase tracking-[0.3em] bg-zinc-950/80 px-4 py-1 rounded-full border border-red-900/50">Lily</span>
+                    <span className="text-sm font-black mt-3 text-red-400 uppercase tracking-[0.3em] bg-zinc-950/80 px-4 py-1 rounded-full border border-red-900/50">Ada Wong</span>
                 </div>
             );
         };
@@ -288,7 +284,7 @@
                 const historyQuestions = ALL_QUESTIONS.filter(q => savedStats.allTimeWrong.includes(q.id));
                 const reviewSet = shuffleArray(historyQuestions).map(q => ({
                     ...q,
-                    question: `[REVISÃO PERPÉTUA] Você errou isto no passado. Deus está observando se você aprendeu: ${q.question}`,
+                    question: `[REVISÃO PERPÉTUA] Você errou isto no passado. Vamos ver se você aprendeu: ${q.question}`,
                     topic: `🧠 HISTÓRICO: ${q.topic}`
                 }));
                 
@@ -346,13 +342,12 @@
                 
                 return (
                     <div className="min-h-screen flex items-center justify-center p-4 md:p-8 lg:p-12 relative overflow-hidden">
-                        {/* Wrapper principal ajustado para telas largas (PC) */}
                         <div className="w-full max-w-6xl z-10 flex flex-col lg:flex-row gap-12 lg:gap-20 items-center lg:items-start justify-center">
                             
-                            {/* Coluna Esquerda: Lily e Contexto */}
+                            {/* Coluna Esquerda: Avatar e Contexto */}
                             <div className="w-full lg:w-5/12 flex flex-col items-center lg:items-start bg-zinc-900/60 backdrop-blur-xl p-8 lg:p-10 rounded-[2.5rem] border border-red-900/30 shadow-2xl">
                                 <div className="w-full flex justify-center lg:justify-start mb-6">
-                                    <LilyAvatar mood="thinking" />
+                                    <AdaAvatar mood="thinking" />
                                 </div>
                                 
                                 <h1 className="text-4xl md:text-5xl font-black mb-2 text-white text-center lg:text-left tracking-tight">Simulador CC3M</h1>
@@ -376,7 +371,7 @@
                                 <div className="text-zinc-300 text-base md:text-lg leading-relaxed bg-black/40 p-6 rounded-3xl border border-zinc-800/50 shadow-lg relative">
                                     <div className="absolute top-4 left-4 text-red-900/40 text-6xl font-serif">"</div>
                                     <p className="relative z-10 italic">
-                                        Acha que a Ada Wong chegou onde chegou perdendo o foco? Com a graça de Deus, sobreviva a essas missões para a prova de amanhã. Eu dividi o conteúdo do professor Eli para o seu cérebro processar rápido. Não me decepcione.
+                                        Acha que eu cheguei onde cheguei perdendo o foco? Com a graça de Deus, sobreviva a essas missões para a prova de amanhã. Eu dividi o conteúdo do professor Eli para o seu cérebro processar rápido. Não me decepcione.
                                     </p>
                                 </div>
                                 
@@ -390,7 +385,7 @@
                                 )}
                             </div>
                             
-                            {/* Coluna Direita: Caminho das Missões (Estilo Mapa) */}
+                            {/* Coluna Direita: Caminho das Missões */}
                             <div className="w-full lg:w-6/12 flex flex-col items-center justify-center py-8 lg:py-12">
                                 <div className="w-full flex flex-col items-center relative">
                                     
@@ -411,12 +406,11 @@
                                             Icon = Flame;
                                         }
 
-                                        // Determinar se a linha DE CIMA desta missão deve estar acesa
                                         const isLineActive = mission.id <= unlockedLevel;
 
                                         return (
                                             <Fragment key={mission.id}>
-                                                {/* Conector dinâmico entre os itens (não renderiza antes do primeiro item) */}
+                                                {/* Conector dinâmico */}
                                                 {idx > 0 && (
                                                     <div className={`w-3 h-16 md:h-20 rounded-full transition-colors duration-1000 ease-in-out my-2 ${isLineActive ? 'bg-red-600 shadow-[0_0_15px_rgba(220,38,38,0.6)]' : 'bg-zinc-900 border border-zinc-800/50'}`}></div>
                                                 )}
@@ -431,7 +425,6 @@
                                                         <Icon size={40} fill={isCompleted ? "currentColor" : "none"} />
                                                     </button>
                                                     
-                                                    {/* Texto lateral no Desktop, abaixo no Mobile */}
                                                     <div className={`text-center md:text-left bg-zinc-900/80 px-6 py-4 rounded-3xl border ${isCurrent ? 'border-red-900/50' : 'border-zinc-800/50'} shadow-lg backdrop-blur-sm w-full md:flex-1 transition-opacity ${!isUnlocked && 'opacity-50'}`}>
                                                         <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
                                                             <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${isCompleted ? 'bg-green-900/50 text-green-400' : isCurrent ? 'bg-red-900/50 text-red-400' : 'bg-zinc-800 text-zinc-500'}`}>
@@ -458,7 +451,7 @@
                 return (
                     <div className="min-h-screen flex flex-col items-center justify-center p-4">
                         <div className="max-w-xl w-full bg-zinc-900/90 backdrop-blur-xl p-10 md:p-12 rounded-[3rem] shadow-2xl text-center border border-zinc-800">
-                            <LilyAvatar mood={survived ? 'happy' : 'angry'} />
+                            <AdaAvatar mood={survived ? 'happy' : 'angry'} />
                             
                             <h2 className="text-4xl md:text-5xl font-black mt-8 mb-4 text-white tracking-tight">
                                 {survived ? "Missão Cumprida" : "Você foi Abatido"}
@@ -466,8 +459,8 @@
                             
                             <p className="text-zinc-300 mb-8 font-medium text-lg leading-relaxed px-4">
                                 {survived 
-                                    ? "Com a ajuda de Deus, você sobreviveu a esta etapa. A Ada Wong estaria orgulhosa." 
-                                    : "Falta de foco! Zero corações. Recupere sua atenção e tente novamente."}
+                                    ? "Com a ajuda de Deus, você sobreviveu a esta etapa. Bom trabalho, sabia que conseguiria." 
+                                    : "Falta de foco! Zero corações. Recupere a sua atenção e tente novamente."}
                             </p>
 
                             <div className="flex justify-center gap-6 my-8">
@@ -497,7 +490,6 @@
             return (
                 <div className="min-h-screen flex flex-col items-center py-6 px-4 md:py-10 relative">
                     
-                    {/* Container Focado para PC (max-w-4xl em vez de max-w-2xl para aproveitar o espaço, mas sem perder a leitura) */}
                     <div className="w-full max-w-4xl flex flex-col flex-1 relative z-10">
                         
                         {/* Header Fixo e Amplo */}
@@ -529,9 +521,8 @@
 
                         {/* Área da Pergunta */}
                         <div className="flex flex-col md:flex-row gap-6 lg:gap-8 mb-10 items-center md:items-start">
-                            <LilyAvatar mood={mood} />
+                            <AdaAvatar mood={mood} />
                             <div className="relative bg-zinc-900/90 p-8 md:p-10 rounded-[2.5rem] md:rounded-tl-none flex-1 shadow-2xl border border-zinc-800 backdrop-blur-sm">
-                                {/* Triângulo do balão (visível só no desktop) */}
                                 <div className="hidden md:block absolute -left-4 top-10 w-0 h-0 border-t-[20px] border-t-zinc-900/90 border-l-[20px] border-l-transparent"></div>
                                 
                                 <div className="flex items-center justify-between mb-4 border-b border-zinc-800/50 pb-4">
@@ -544,7 +535,7 @@
                             </div>
                         </div>
 
-                        {/* Opções de Resposta: Mais largas, com bom espaçamento */}
+                        {/* Opções de Resposta */}
                         <div className="space-y-4 pb-40">
                             {currentQuestion?.options.map((opt, i) => {
                                 let style = "border-zinc-800 bg-zinc-900/60 hover:bg-zinc-800 hover:border-zinc-600 text-zinc-200";
@@ -572,7 +563,7 @@
                         </div>
                     </div>
 
-                    {/* Bottom Action Bar: Fixa, grande, assertiva */}
+                    {/* Bottom Action Bar */}
                     <div className={`fixed bottom-0 left-0 right-0 p-6 border-t-2 transition-all duration-300 transform z-30 flex justify-center backdrop-blur-xl ${
                         isAnswered 
                             ? (isCorrect ? 'bg-zinc-950/95 border-green-900/50' : 'bg-zinc-950/95 border-red-900/50') 
@@ -615,7 +606,7 @@
                                 <AlertTriangle size={100} className="text-red-600 mb-8 animate-pulse drop-shadow-[0_0_15px_rgba(220,38,38,0.8)]" />
                                 <h2 className="text-4xl font-black text-white mb-4 text-center uppercase tracking-widest">Missão Falhou</h2>
                                 <p className="text-zinc-300 text-center mb-10 text-lg leading-relaxed bg-zinc-950 p-6 rounded-3xl border border-red-900/30">
-                                    A Ada Wong não tolera fraqueza. Você perdeu todos os seus corações. Ore a Deus por paciência, recupere o foco absoluto e tente esta missão de novo.
+                                    Eu não tolero fraqueza. Você perdeu todos os seus corações. Ore a Deus por paciência, recupere o foco absoluto e tente esta missão de novo.
                                 </p>
                                 <button 
                                     onClick={() => setStep('intro')}
