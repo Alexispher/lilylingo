@@ -92,7 +92,7 @@
             
             // MISSÃO 1: PMF, ESPERANÇA E VARIÂNCIA
             { id: 13, topic: "PMF (Regra de Ouro)", question: "No seu jogo 'Cinzas de Eldhaven', um boss dropa itens com a seguinte PMF: P(0 itens)=0.10, P(1)=0.50, P(2)=0.25. Qual a probabilidade do boss dropar 3 itens, sabendo que 3 é o limite máximo?", options: ["0.15", "0.25", "0.05", "1.00"], correct: 0, rationale: "A soma tem de ser 1. Temos 0.10 + 0.50 + 0.25 = 0.85. Logo, 1.00 - 0.85 = 0.15.", hint: "Some tudo o que já existe e subtraia de 1." },
-            { id: 14, topic: "Esperança Matemática", question: "Usando o drop do boss: 0(0.10), 1(0.50), 2(0.25) e 3(0.15). Quantos itens você ESPERA que ele drope em média por combate?", options: ["1.45 itens", "1.50 itens", "2.00 itens", "1.00 item"], correct: 0, rationale: "E(X) = (0 * 0.10) + (1 * 0.50) + (2 * 0.25) + (3 * 0.15) = 0 + 0.50 + 0.50 + 0.45 = 1.45.", hint: "Multiplique a quantidade de itens pela probabilidade e some tudo." },
+            { id: 14, topic: "Esperança Matemática", question: "Usando o drop do boss: 0(0.10), 1(0.50), 2(0.25) e 3(0.15). Quantos itens você ESPERA que ele drope em média por combate?", options: ["1.45 itens", "1.50 itens", "2.00 itens", "1.00 item"], correct: 0, rationale: "E(X) = (0 * 0.10) + (1 * 0.50) + (2 * 0.25) + (3 * 0.15) = 0 + 0.50 + 0.50 + 0.45 = 1.45.", hint: "Multiplique a quantidade de itens pela probabilidade e sume tudo." },
             { id: 15, topic: "PMF com Incógnitas", question: "Um teste no Project PEGASUS retorna erros: P(0)=0.60, P(1)=c, P(2)=c, P(3)=0.10. Qual é o valor de c?", options: ["0.15", "0.30", "0.10", "0.20"], correct: 0, rationale: "0.60 + 0.10 = 0.70. Faltam 0.30 para chegar a 1. Como temos dois 'c', dividimos 0.30 por 2 = 0.15.", hint: "Ache o que falta para 100% e divida pelas letras iguais." },
             { id: 16, topic: "Variância Conceitual", question: "Se o tempo de compilação do seu código tem Esperança de 12s e Variância de 0s, o que isso significa na prática?", options: ["O código sempre compila em exatamente 12s, sem nenhuma variação.", "Há um erro de cálculo, a variância não pode ser zero.", "O código demora em média 12s, mas às vezes vai a 24s.", "A probabilidade de erro é zero."], correct: 0, rationale: "Variância zero significa dispersão nula. Todos os valores do conjunto são exatamente iguais à média.", hint: "Se algo não varia, como ele se comporta?" },
             { id: 17, topic: "Esperança (Jogo Justo)", question: "Num jogo de dados, você paga R$5 para jogar. Se ganhar, recebe R$10 (lucro de R$5). Se perder, não recebe nada (prejuízo de R$5). A chance de ganhar é 50%. Qual a Esperança de lucro?", options: ["R$0 (Jogo Justo)", "R$5", "R$2.50", "-R$5"], correct: 0, rationale: "E(X) = (5 * 0.50) + (-5 * 0.50) = 2.50 - 2.50 = 0. Um jogo com esperança zero é matematicamente justo.", hint: "Considere valores negativos para perdas." },
@@ -132,7 +132,7 @@
             // TÓPICO 1 (Novo): PMF, ESPERANÇA E VARIÂNCIA
             // ==========================================
             { id: 39, topic: "PMF", question: "Se uma PMF possui P(0)=0.1, P(1)=0.2, P(2)=0.3, qual deve ser o valor de P(3) se 3 for o último evento possível?", options: ["0.4", "0.6", "0.1", "1.0"], correct: 0, rationale: "0.1 + 0.2 + 0.3 = 0.6. Faltam 0.4 para chegar a 1.0 (100%).", hint: "A soma total sempre dá 1." },
-            { id: 40, topic: "Esperança", question: "No Cinzas de Eldhaven, o dano base de uma espada tem P(10)=0.5, P(20)=0.3, P(30)=0.2. Qual é a Esperança E(X) do dano?", options: ["17", "20", "15", "25"], correct: 0, rationale: "(10 * 0.5) + (20 * 0.3) + (30 * 0.2) = 5 + 6 + 6 = 17.", hint: "Multiplique o valor pela probabilidade e some tudo." },
+            { id: 40, topic: "Esperança", question: "No Cinzas de Eldhaven, o dano base de uma espada tem P(10)=0.5, P(20)=0.3, P(30)=0.2. Qual é a Esperança E(X) do dano?", options: ["17", "20", "15", "25"], correct: 0, rationale: "(10 * 0.5) + (20 * 0.3) + (30 * 0.2) = 5 + 6 + 6 = 17.", hint: "Multiplique o valor pela probabilidade e sume tudo." },
             { id: 41, topic: "PMF Inválida", question: "Por que uma distribuição com P(X=1) = 1.2 e P(X=2) = -0.2 é inválida, mesmo a soma sendo 1?", options: ["Probabilidades não podem ser negativas ou maiores que 1.", "A média seria negativa.", "Falta o P(X=0).", "A variância seria infinita."], correct: 0, rationale: "Duas regras de ouro: a soma dá 1, e NENHUMA probabilidade individual pode ser menor que 0 ou maior que 1.", hint: "Existe chance de -20% de algo acontecer?" },
             { id: 42, topic: "Esperança Constante", question: "Se o seu projeto PEGASUS demora exatamente 5 segundos para compilar todas as vezes sem falha. Qual é o E(X)?", options: ["5", "0", "1", "Incalculável"], correct: 0, rationale: "Se um evento é constante, a média esperada é o próprio valor constante.", hint: "Se algo é sempre igual, a média é esse algo." },
             { id: 43, topic: "Variância Constante", question: "Usando o exemplo do PEGASUS que compila sempre em exatamente 5 segundos. Qual a Variância?", options: ["0", "5", "25", "1"], correct: 0, rationale: "Variância mede o quanto os dados variam em torno da média. Se é sempre 5, não há variação. Logo, é 0.", hint: "Dispersão nula." },
@@ -244,6 +244,20 @@
         ];
 
         const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
+
+        // Algoritmo dinâmico para embaralhar as alternativas
+        const shuffleOptionsForQuestion = (q) => {
+            const optionsWithCorrectness = q.options.map((opt, idx) => ({
+                text: opt,
+                isCorrect: idx === q.correct
+            }));
+            const shuffled = shuffleArray(optionsWithCorrectness);
+            return {
+                ...q,
+                options: shuffled.map(o => o.text),
+                correct: shuffled.findIndex(o => o.isCorrect)
+            };
+        };
 
         // Componente Ada Wong Avatar com Tamanho Aumentado
         const AdaAvatar = ({ mood }) => {
@@ -370,7 +384,8 @@
                 const questions = ALL_QUESTIONS.filter(q => mission.qIds.includes(q.id));
                 
                 setActiveMission(mission);
-                setQuizSet(shuffleArray(questions));
+                // Embaralha as perguntas E as opções de cada pergunta para ser dinâmico
+                setQuizSet(shuffleArray(questions).map(shuffleOptionsForQuestion));
                 setWrongAnswers([]);
                 setCurrentIndex(0);
                 setScore(0);
@@ -390,7 +405,7 @@
                     ...q,
                     question: `[REVISÃO PERPÉTUA] Você errou isto no passado. Vamos ver se você aprendeu: ${q.question}`,
                     topic: `🧠 HISTÓRICO: ${q.topic}`
-                }));
+                })).map(shuffleOptionsForQuestion); // Embaralha as opções de erro também
                 
                 setActiveMission({ id: 'review', title: "Mega Revisão", subtitle: "Todos os seus erros passados" });
                 setQuizSet(reviewSet);
@@ -638,7 +653,7 @@
                             </div>
                         </div>
 
-                        {/* Opções de Resposta */}
+                        {/* Opções de Resposta Dinamicamente Embaralhadas */}
                         <div className="space-y-4 pb-40">
                             {currentQuestion?.options.map((opt, i) => {
                                 let style = "border-zinc-800 bg-zinc-900/60 hover:bg-zinc-800 hover:border-zinc-600 text-zinc-200";
